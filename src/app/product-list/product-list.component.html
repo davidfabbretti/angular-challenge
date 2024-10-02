@@ -1,0 +1,87 @@
+<div class="container product-list-container">
+    <div class="row my-5">
+        <div class="col-11">
+            <h4>Product List</h4>
+        </div>
+        <div class="col-1">
+            <button class="btn btn-danger" (click)="logout()">Close</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <label for="category">Categoría</label>
+                    <select id="category" class="form-select" [(ngModel)]="selectedCategory" (change)="filterProducts()">
+                        <option value="">Todas</option>
+                        <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="recordCount">Registros</label>
+                    <select id="recordCount" class="form-select" [(ngModel)]="recordCount" (change)="changeRecordCount()">
+                        <option *ngFor="let count of recordCounts" [value]="count">{{ count }} registros</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <table mat-table [dataSource]="filteredProducts" class="table table-responsive" *ngIf="products.length > 0">
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef> ID</th>
+            <td mat-cell *matCellDef="let product"> {{ product.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef> Title</th>
+            <td mat-cell *matCellDef="let product"> {{ product.title }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+            <th mat-header-cell *matHeaderCellDef> Category</th>
+            <td mat-cell *matCellDef="let product"> {{ product.category }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="price">
+            <th mat-header-cell *matHeaderCellDef> Price</th>
+            <td mat-cell *matCellDef="let product"> ${{ product.price }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let product">
+                <button class="btn btn-success" (click)="openDetails(product, content)">Ver</button>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div *ngIf="products.length === 0">Cargando productos...</div>
+
+    <ng-template #content let-modal>
+        <div class="card">
+            <div class="card-header">
+                <h6 class="modal-title">{{ selectedProduct?.title }}
+                    <button type="button" class="btn btn-success close text-right" aria-label="Close"
+                            (click)="modal.dismiss()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </h6>
+
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <img [src]="selectedProduct?.image" alt="{{ selectedProduct?.title }}" class="w-50 img-fluid mb-3">
+                </div>
+                <p><strong>Descripción:</strong> {{ selectedProduct?.description }}</p>
+                <p><strong>Precio:</strong> ${{ selectedProduct?.price }}</p>
+            </div>
+        </div>
+
+    </ng-template>
+</div>

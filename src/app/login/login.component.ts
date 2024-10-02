@@ -18,19 +18,24 @@ export class LoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['user@demo.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required, Validators.minLength(6)]]
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
     });
   }
 
   onSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.authService.login(email, password).subscribe(success => {
-        if (success) {
-          this.router.navigate(['/product-list']);
-        } else {
-          alert('Credenciales incorrectas');
+      this.authService.login(email, password).subscribe( {
+        next: (result) => {
+          if (result){
+            this.router.navigate(['/shopping']);
+          } else {
+            alert('Credenciales incorrectas');
+          }
+        },
+        error: (error) => {
+          alert('Error al iniciar sesión');
         }
       });
     }

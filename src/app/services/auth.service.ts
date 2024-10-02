@@ -1,7 +1,7 @@
 // auth.service.ts
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import {Observable, of} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {catchError, map, Observable, of} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,11 +10,16 @@ export class AuthService {
   private apiUrl = '/api/login';
   private loggedIn = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
-  login(email: string, password: string): Observable<any> {
-    this.loggedIn = true;
-    return this.http.post(this.apiUrl, { email, password });
+  login(email: string, password: string): Observable<boolean> {
+    return this.http.post(this.apiUrl, {email, password}).pipe(
+      map((result: any) => {
+        this.loggedIn = result.success;
+        return this.loggedIn;
+      }),
+    );
   }
 
   logout() {
